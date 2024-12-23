@@ -14,11 +14,10 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.188" />
-
+        app:layout_constraintVertical_bias="0.113" />
 
     <Button
         android:id="@+id/recipeButton"
@@ -27,7 +26,31 @@
         android:text="לחץ למסך רשימת מתכונים"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.841" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/edit_text"
+        android:inputType="text"
+        android:layoutDirection="rtl"
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:textDirection="rtl"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="208dp" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="שלח"
+        tools:layout_editor_absoluteX="151dp"
+        tools:layout_editor_absoluteY="290dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
