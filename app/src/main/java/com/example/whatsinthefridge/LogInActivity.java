@@ -30,6 +30,7 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -38,38 +39,61 @@ public class LogInActivity extends AppCompatActivity {
     GoogleSignInClient googleSignInClient;
     ShapeableImageView imageView;
     TextView name, mail;
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK) {
-                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                try {
-                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                auth = FirebaseAuth.getInstance();
-                                Glide.with(LogInActivity.this).load(Objects.requireNonNull(auth.getCurrentUser()).getPhotoUrl()).into(imageView);
-                                name.setText(auth.getCurrentUser().getDisplayName());
-                                mail.setText(auth.getCurrentUser().getEmail());
-                                Toast.makeText(LogInActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(LogInActivity.this,MainActivity.class);
-                                intent.putExtra("USERNAME",auth.getCurrentUser().getDisplayName());
 
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(LogInActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        try {
+                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+
+                            auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        auth = FirebaseAuth.getInstance();
+                                        FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                        String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+
+                                        // Create a custom User object
+                                        User user = new User(
+                                                userId,
+                                                auth.getCurrentUser().getDisplayName(),
+                                                auth.getCurrentUser().getEmail(),
+                                                auth.getCurrentUser().getPhotoUrl() != null ? auth.getCurrentUser().getPhotoUrl().toString() : ""
+                                        );
+
+                                        // Save user info to Firebase Realtime Database
+                                        database.getReference("Users").child(userId).setValue(user);
+
+                                        // Load profile data
+                                        Glide.with(LogInActivity.this)
+                                                .load(Objects.requireNonNull(auth.getCurrentUser()).getPhotoUrl())
+                                                .into(imageView);
+
+                                        name.setText(auth.getCurrentUser().getDisplayName());
+                                        mail.setText(auth.getCurrentUser().getEmail());
+
+                                        Toast.makeText(LogInActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                                        intent.putExtra("USERNAME", auth.getCurrentUser().getDisplayName());
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(LogInActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        } catch (ApiException e) {
+                            e.printStackTrace();
                         }
-                    });
-                } catch (ApiException e) {
-                    e.printStackTrace();
+                    }
                 }
-            }
-        }
-    });
+            });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,7 +144,9 @@ public class LogInActivity extends AppCompatActivity {
         });
 
         if (auth.getCurrentUser() != null) {
-            Glide.with(LogInActivity.this).load(Objects.requireNonNull(auth.getCurrentUser()).getPhotoUrl()).into(imageView);
+            Glide.with(LogInActivity.this)
+                    .load(Objects.requireNonNull(auth.getCurrentUser()).getPhotoUrl())
+                    .into(imageView);
             name.setText(auth.getCurrentUser().getDisplayName());
             mail.setText(auth.getCurrentUser().getEmail());
         }
