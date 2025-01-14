@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1032359435229",
+    "project_id": "whatsinthefridge-5a069",
+    "storage_bucket": "whatsinthefridge-5a069.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032359435229:android:7c7df42b7bc1010ec1b434",
+        "android_client_info": {
+          "package_name": "com.example.whatsinthefridge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032359435229-l858i7gpn87ftk9tq035pllgan3von2r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.whatsinthefridge",
+            "certificate_hash": "d61b1bbc90731a0399c323564da2b434b11e3afc"
+          }
+        },
+        {
+          "client_id": "1032359435229-jg8ue29mqu6buhi70smvhorolc2tu94d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8kNZ-U2PhNK2HCLw7hC0iLWvKwFyhRnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1032359435229-jg8ue29mqu6buhi70smvhorolc2tu94d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
