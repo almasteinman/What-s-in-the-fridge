@@ -21,4 +21,5 @@ public class RecipeListActivity extends AppCompatActivity {
             return insets;
         });
     }
+
 }
