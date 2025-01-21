@@ -41,14 +41,12 @@
         android:minHeight="48dp"
         android:padding="8dp"
         android:textDirection="rtl"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="208dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.841" />
+        app:layout_constraintVertical_bias="0.392" />
 
     <Button
         android:id="@+id/submitButton"
@@ -56,13 +54,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="שלח"
-        tools:layout_editor_absoluteX="151dp"
-        tools:layout_editor_absoluteY="290dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.841" />
+        app:layout_constraintVertical_bias="0.499" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
