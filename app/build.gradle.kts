@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.database)
     implementation(libs.recyclerview)
+    implementation(libs.firebase.vertexai)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -48,4 +49,12 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation ("com.google.gms:google-services:4.3.15")
 
+    implementation(libs.firebase.vertexai)
+    implementation("com.google.guava:guava:31.0.1-android")
+
+    // To use CallbackToFutureAdapter
+    implementation("androidx.concurrent:concurrent-futures:1.2.0")
+
+    // Kotlin
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-guava:1.6.0")
 }
