@@ -10,6 +10,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,7 +26,39 @@ import com.google.firebase.vertexai.java.GenerativeModelFutures;
 import com.google.firebase.vertexai.type.Content;
 import com.google.firebase.vertexai.type.GenerateContentResponse;
 
+import android.content.Intent;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.RecognitionListener;
+import android.speech.tts.TextToSpeech;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import java.util.ArrayList;
+import java.util.Locale;
+
+
 public class IngredientsActivity extends AppCompatActivity {
+
+    private EditText ingredientInput;
+    private Button voiceInputButton;
+    private SpeechRecognizer speechRecognizer;
+
+    ActivityResultLauncher<Intent> speechRecognitionLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                Log.e("XXX", "onActivityResult");
+                if (result.getResultCode() == RESULT_OK) {
+                    Intent data = result.getData();
+                    if (data != null) {
+                        ArrayList<String> resultList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                        if (resultList != null && !resultList.isEmpty()) {
+                            String previousText = ingredientInput.getText().toString();
+                            ingredientInput.setText(previousText + "\n" + resultList.get(0));
+                        }
+                    }
+                }
+            });
 
     @SuppressLint("NewApi")
     @Override
@@ -38,65 +72,56 @@ public class IngredientsActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Find the button by its ID
-        Button recipeButton = findViewById(R.id.recipeButton);
 
-        // Set click listener for the button
-        recipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an Intent to start the RecipeListActivity
-                Intent intent = new Intent(IngredientsActivity.this, RecipeListActivity.class);
-                startActivity(intent);
-            }
-        });
+//
+//// Initialize the Vertex AI service and the generative model
+//// Specify a model that supports your use case
+//// Gemini 1.5 models are versatile and can be used with all API capabilities
+//        GenerativeModel gm = FirebaseVertexAI.getInstance()
+//                .generativeModel("gemini-1.5-flash-preview-0514");
+//
+//// Use the GenerativeModelFutures Java compatibility layer which offers
+//// support for ListenableFuture and Publisher APIs
+//GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+//
+//// Provide a prompt that contains text
+//        Content prompt = new Content.Builder()
+//                .addText("Write a story about a magic backpack.")
+//                .build();
+//
+//// To generate text output, call generateContent with the text input
+//        ListenableFuture<GenerateContentResponse> response = model.generateContent(prompt);
+//        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+//            @Override
+//            public void onSuccess(GenerateContentResponse result) {
+//                String resultText = result.getText();
+//                Log.e("alma",resultText);
+//            }
+//
+//            @Override
+//            public void onFailure(Throwable t) {
+//                t.printStackTrace();
+//            }
+//        }, this.getApplicationContext().getMainExecutor());
+//
 
-        // מציאת ה-EditText לפי ה-ID
-        EditText editText = findViewById(R.id.editText);
-        Button submitButton = findViewById(R.id.submitButton);
+        ingredientInput = findViewById(R.id.ingredientInput);
+        voiceInputButton = findViewById(R.id.voiceInputButton);
 
-        // הגדרת לחיצה על כפתור להצגת הטקסט
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String userInput = editText.getText().toString();
-                Toast.makeText(IngredientsActivity.this, "הטקסט שהוזן: " + userInput, Toast.LENGTH_SHORT).show();
-            }
-        });
+        // יצירת אובייקט לזיהוי דיבור
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
-
-// Initialize the Vertex AI service and the generative model
-// Specify a model that supports your use case
-// Gemini 1.5 models are versatile and can be used with all API capabilities
-        GenerativeModel gm = FirebaseVertexAI.getInstance()
-                .generativeModel("gemini-1.5-flash-preview-0514");
-
-// Use the GenerativeModelFutures Java compatibility layer which offers
-// support for ListenableFuture and Publisher APIs
-GenerativeModelFutures model = GenerativeModelFutures.from(gm);
-
-// Provide a prompt that contains text
-        Content prompt = new Content.Builder()
-                .addText("Write a story about a magic backpack.")
-                .build();
-
-// To generate text output, call generateContent with the text input
-        ListenableFuture<GenerateContentResponse> response = model.generateContent(prompt);
-        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
-            @Override
-            public void onSuccess(GenerateContentResponse result) {
-                String resultText = result.getText();
-                Log.e("alma",resultText);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                t.printStackTrace();
-            }
-        }, this.getApplicationContext().getMainExecutor());
-
-        // דוגמה להגדרת טקסט התחלתי
-        editText.setHint("הכנס טקסט כאן...");
-    }
+        voiceInputButton.setOnClickListener(v -> startSpeechToText());
 
     }
+
+    private void startSpeechToText() {
+        Log.d("SpeechToText", "התחלתי את זיהוי הדיבור");
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "תגיד את רכיבי המתכון");
+        speechRecognitionLauncher.launch(intent);
+    }
+}
+

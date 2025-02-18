@@ -32,33 +32,21 @@
         app:layout_constraintVertical_bias="0.841" />
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
+        android:id="@+id/ingredientInput"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/edit_text"
+        android:hint="תגיד את רכיבי המתכון..."
         android:inputType="text"
-        android:layoutDirection="rtl"
-        android:minHeight="48dp"
-        android:padding="8dp"
-        android:textDirection="rtl"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.392" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
-        android:id="@+id/submitButton"
+        android:id="@+id/voiceInputButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="שלח"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        android:text="🎤 דבר עכשיו"
+        app:layout_constraintTop_toBottomOf="@id/ingredientInput"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
-
+        app:layout_constraintEnd_toEndOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
