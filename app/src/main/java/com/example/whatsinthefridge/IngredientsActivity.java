@@ -97,6 +97,19 @@ public class IngredientsActivity extends AppCompatActivity {
 
         voiceInputButton.setOnClickListener(v -> startSpeechToText());
 
+        // Find the button by its ID
+        Button recipeButton = findViewById(R.id.recipeButton);
+
+        // Set click listener for the button
+        recipeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to start the IngredientsActivity
+                Intent intent = new Intent(IngredientsActivity.this, RecipeListActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void startSpeechToText() {
@@ -120,7 +133,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
         // בניית ה-Prompt עם הטקסט שנקלט מהדיבור
         Content prompt = new Content.Builder()
-                .addText("Analyze the following ingredients: " + text)
+                .addText("create a recipe with the following ingredients: " + text)
                 .build();
 
         // שליחת הבקשה ל-Gemini
