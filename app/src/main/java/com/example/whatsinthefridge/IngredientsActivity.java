@@ -29,30 +29,18 @@ import com.google.firebase.vertexai.java.GenerativeModelFutures;
 import com.google.firebase.vertexai.type.Content;
 import com.google.firebase.vertexai.type.GenerateContentResponse;
 
-import android.content.Intent;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
-import android.speech.RecognitionListener;
-import android.speech.tts.TextToSpeech;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.Locale;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.annotation.NonNull;
-
-
 
 public class IngredientsActivity extends AppCompatActivity {
 
     private EditText ingredientInput;
-    private Button voiceInputButton;
+    private Button voiceInputButton, generateRecipeButton;
     private SpeechRecognizer speechRecognizer;
+    private GenerativeModelFutures model;
 
     ActivityResultLauncher<Intent> speechRecognitionLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -76,7 +64,6 @@ public class IngredientsActivity extends AppCompatActivity {
                 }
             });
 
-
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,25 +78,25 @@ public class IngredientsActivity extends AppCompatActivity {
 
         ingredientInput = findViewById(R.id.ingredientInput);
         voiceInputButton = findViewById(R.id.voiceInputButton);
+        generateRecipeButton = findViewById(R.id.recipeButton);
 
         // יצירת אובייקט לזיהוי דיבור
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-
         voiceInputButton.setOnClickListener(v -> startSpeechToText());
 
-        // Find the button by its ID
-        Button recipeButton = findViewById(R.id.recipeButton);
+        // אתחול מודל Gemini
+        GenerativeModel gm = FirebaseVertexAI.getInstance().generativeModel("gemini-1.5-flash-preview-0514");
+        model = GenerativeModelFutures.from(gm);
 
-        // Set click listener for the button
-        recipeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an Intent to start the IngredientsActivity
-                Intent intent = new Intent(IngredientsActivity.this, RecipeListActivity.class);
-                startActivity(intent);
+        // כפתור יצירת המתכון
+        generateRecipeButton.setOnClickListener(v -> {
+            String ingredients = ingredientInput.getText().toString();
+            if (ingredients.isEmpty()) {
+                Toast.makeText(this, "אנא הזן רכיבים ליצירת מתכון", Toast.LENGTH_SHORT).show();
+            } else {
+                sendToGemini(ingredients);
             }
         });
-
     }
 
     private void startSpeechToText() {
@@ -121,19 +108,12 @@ public class IngredientsActivity extends AppCompatActivity {
         speechRecognitionLauncher.launch(intent);
     }
 
-
     private void sendToGemini(String text) {
         Log.d("GeminiAI", "שולח את הטקסט ל-Gemini: " + text);
 
-        // אתחול המודל של Gemini
-        GenerativeModel gm = FirebaseVertexAI.getInstance()
-                .generativeModel("gemini-1.5-flash-preview-0514");
-
-        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
-
         // בניית ה-Prompt עם הטקסט שנקלט מהדיבור
         Content prompt = new Content.Builder()
-                .addText("create a recipe with the following ingredients: " + text)
+                .addText("Create 3 recipes using these ingredients: " + text)
                 .build();
 
         // שליחת הבקשה ל-Gemini
@@ -141,9 +121,11 @@ public class IngredientsActivity extends AppCompatActivity {
         Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
             @Override
             public void onSuccess(GenerateContentResponse result) {
-                String resultText = result.getText();
-                Log.e("Gemini Response", resultText);
-                runOnUiThread(() -> Toast.makeText(IngredientsActivity.this, "Gemini: " + resultText, Toast.LENGTH_LONG).show());
+                String generatedText = result.getText();
+                Log.e("Gemini Response", generatedText);
+
+                // מעבר למסך המתכונים עם התשובה מג'מיני
+                sendDataToRecipeListActivity(generatedText);
             }
 
             @Override
@@ -151,7 +133,13 @@ public class IngredientsActivity extends AppCompatActivity {
                 t.printStackTrace();
                 runOnUiThread(() -> Toast.makeText(IngredientsActivity.this, "שגיאה בשליחת הטקסט ל-Gemini", Toast.LENGTH_SHORT).show());
             }
-        }, this.getApplicationContext().getMainExecutor());
+        }, this.getMainExecutor());
+    }
+
+    private void sendDataToRecipeListActivity(String recipeData) {
+        Intent intent = new Intent(IngredientsActivity.this, RecipeListActivity.class);
+        intent.putExtra("recipe_data", recipeData);
+        startActivity(intent);
     }
 }
 
