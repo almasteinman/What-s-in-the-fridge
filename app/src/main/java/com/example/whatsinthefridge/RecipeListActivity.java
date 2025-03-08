@@ -48,23 +48,41 @@ public class RecipeListActivity extends AppCompatActivity {
             Log.d("RecipeList", "📥 התקבלו נתונים: " + recipeData);
 
             // פירוק תשובת Gemini והוספת מתכונים לרשימה
-            String[] recipeLines = recipeData.split("\n");
-            for (String line : recipeLines) {
-                if (!line.trim().isEmpty()) {
-                    String[] parts = line.split(":", 2);
-                    if (parts.length == 2) {
-                        String name = parts[0].trim();
-                        String description = parts[1].trim();
-                        String[] ingredients = {"alma", "shira"};
-                        String[] instructions = {"alma1", "shira1"};
-                        recipes.add(new Recipe(name, description, R.drawable.pasta,ingredients,instructions));
-                    }
-                }
+            String[] rawrecipeLines = recipeData.split("\\*\\*\\d", 4); // פיצול לפי **1, **2, **3 (תוך הגבלת פיצול ל-3 חלקים בלבד)
+            for (int i = 1; i < rawrecipeLines.length; i++) { // מתחילים מ-1 כי החלק הראשון הוא לפני **1
+
+                String[] ingredients = {"alma", "shira"};
+                String[] instructions = {"alma1", "shira1"};
+                String trimmedText = rawrecipeLines[i].trim(); // מסירים רווחים מיותרים
+                recipes.add(new Recipe(getFirstWords(trimmedText, 10), "blabla", R.drawable.pasta, ingredients, instructions));
             }
         }
+            //String[] recipeLines = recipeData.split("\n");
+//            for (String line : recipeLines) {
+//                if (!line.trim().isEmpty()) {
+//                    String[] parts = line.split(":", 2);
+//                    if (parts.length == 2) {
+//                        String name = parts[0].trim();
+//                        String description = parts[1].trim();
+//                        String[] ingredients = {"alma", "shira"};
+//                        String[] instructions = {"alma1", "shira1"};
+//                        recipes.add(new Recipe(name, description, R.drawable.pasta,ingredients,instructions));
+//                    }
+//                }
+//            }
+
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipes);
         // Set Adapter
         RecipeAdapter adapter = new RecipeAdapter(recipes);
         recyclerView.setAdapter(adapter);
+    }
+
+    private static String getFirstWords(String text, int wordLimit) {
+        String[] words = text.split("\\s+"); // מחלקים לפי רווחים
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < Math.min(words.length, wordLimit); i++) {
+            result.append(words[i]).append(" ");
+        }
+        return result.toString().trim(); // מחזירים מחרוזת מסודרת
     }
 }
