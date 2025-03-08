@@ -52,9 +52,8 @@ public class DetailActivity extends AppCompatActivity {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(DetailActivity.this, MainActivity.class);
+                Intent intent = new Intent(DetailActivity.this, IngredientsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
     }
