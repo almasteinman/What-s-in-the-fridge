@@ -54,8 +54,6 @@ public class RecipeListActivity extends AppCompatActivity {
             // פירוק תשובת Gemini והוספת מתכונים לרשימה
             String[] rawrecipeLines = recipeData.split("\\*\\*\\d", 4); // פיצול לפי **1, **2, **3 (תוך הגבלת פיצול ל-3 חלקים בלבד)
             for (int i = 1; i < rawrecipeLines.length; i++) { // מתחילים מ-1 כי החלק הראשון הוא לפני **1
-
-                String desc = getDescriptionFromLines(rawrecipeLines[i]);
                 String[] ingredients = getIngridientsFromLines(rawrecipeLines[i]);
                         // {"alma", "shira"};
                 String[] instructions = getInstructionsFromLines(rawrecipeLines[i]);
@@ -63,7 +61,7 @@ public class RecipeListActivity extends AppCompatActivity {
                 String trimmedText = rawrecipeLines[i].trim(); // מסירים רווחים מיותרים
                 String name = getFirstWords(trimmedText, 10);
 
-                recipes.add(new Recipe(name, desc, R.drawable.pasta, ingredients, instructions));
+                recipes.add(new Recipe(name, R.drawable.pasta, ingredients, instructions));
             }
         }
             //String[] recipeLines = recipeData.split("\n");
@@ -96,22 +94,6 @@ public class RecipeListActivity extends AppCompatActivity {
         Log.d("ALMA","getFirstWords"+result.toString().trim());
 
         return result.toString().trim(); // מחזירים מחרוזת מסודרת
-    }
-
-    public static String getDescriptionFromLines(String text) {
-        if (text == null || text.trim().isEmpty()) {
-            return "";
-        }
-
-        String[] words = text.split("\\s+"); // Split by spaces (handling multiple spaces)
-        StringBuilder description = new StringBuilder();
-
-        for (int i = 0; i < Math.min(words.length, 20); i++) {
-            description.append(words[i]).append(" ");
-        }
-        Log.d("ALMA","getDescriptionFromLines"+description.toString().trim());
-
-        return description.toString().trim(); // Remove trailing spaces
     }
 
     public static String[] getIngridientsFromLines(String text) {

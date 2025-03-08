@@ -113,7 +113,7 @@ public class IngredientsActivity extends AppCompatActivity {
 
         // בניית ה-Prompt עם הטקסט שנקלט מהדיבור
         Content prompt = new Content.Builder()
-                .addText("Create 3 recipes with 10 words of short description to each one of them using these ingredients: " + text)
+                .addText("Create 3 recipes using these ingredients: " + text)
                 .build();
 
         // שליחת הבקשה ל-Gemini
