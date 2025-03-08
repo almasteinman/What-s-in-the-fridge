@@ -55,10 +55,15 @@ public class RecipeListActivity extends AppCompatActivity {
             String[] rawrecipeLines = recipeData.split("\\*\\*\\d", 4); // פיצול לפי **1, **2, **3 (תוך הגבלת פיצול ל-3 חלקים בלבד)
             for (int i = 1; i < rawrecipeLines.length; i++) { // מתחילים מ-1 כי החלק הראשון הוא לפני **1
 
-                String[] ingredients = {"alma", "shira"};
-                String[] instructions = {"alma1", "shira1"};
+                String desc = getDescriptionFromLines(rawrecipeLines[i]);
+                String[] ingredients = getIngridientsFromLines(rawrecipeLines[i]);
+                        // {"alma", "shira"};
+                String[] instructions = getInstructionsFromLines(rawrecipeLines[i]);
+                        //{"alma1", "shira1"};
                 String trimmedText = rawrecipeLines[i].trim(); // מסירים רווחים מיותרים
-                recipes.add(new Recipe(getFirstWords(trimmedText, 10), "blabla", R.drawable.pasta, ingredients, instructions));
+                String name = getFirstWords(trimmedText, 10);
+
+                recipes.add(new Recipe(name, desc, R.drawable.pasta, ingredients, instructions));
             }
         }
             //String[] recipeLines = recipeData.split("\n");
@@ -88,6 +93,97 @@ public class RecipeListActivity extends AppCompatActivity {
         for (int i = 0; i < Math.min(words.length, wordLimit); i++) {
             result.append(words[i]).append(" ");
         }
+        Log.d("ALMA","getFirstWords"+result.toString().trim());
+
         return result.toString().trim(); // מחזירים מחרוזת מסודרת
     }
+
+    public static String getDescriptionFromLines(String text) {
+        if (text == null || text.trim().isEmpty()) {
+            return "";
+        }
+
+        String[] words = text.split("\\s+"); // Split by spaces (handling multiple spaces)
+        StringBuilder description = new StringBuilder();
+
+        for (int i = 0; i < Math.min(words.length, 20); i++) {
+            description.append(words[i]).append(" ");
+        }
+        Log.d("ALMA","getDescriptionFromLines"+description.toString().trim());
+
+        return description.toString().trim(); // Remove trailing spaces
+    }
+
+    public static String[] getIngridientsFromLines(String text) {
+        ArrayList<String> ingredientsList = new ArrayList<>();
+
+        // Check if the text is empty or null
+        if (text == null || text.trim().isEmpty()) {
+            return new String[0]; // Return an empty array if no ingredients found
+        }
+
+        // Find the section that contains ingredients between "**Ingredients" and "**Instructions"
+        int ingredientsStart = text.indexOf("**Ingredients");
+        int instructionsStart = text.indexOf("**Instructions");
+
+        // If both sections are found
+        if (ingredientsStart != -1 && instructionsStart != -1) {
+            String ingredientsSection = text.substring(ingredientsStart + 12, instructionsStart).trim(); // Extract the ingredients part
+
+            // Split the ingredients section by lines
+            String[] lines = ingredientsSection.split("\n");
+
+            // Add each line as an ingredient, skipping empty lines
+            for (String line : lines) {
+                String trimmedLine = line.trim();
+                if (!trimmedLine.isEmpty()) {
+                    ingredientsList.add(trimmedLine);
+                }
+            }
+        }
+        Log.d("ALMA","getIngridientsFromLines"+ingredientsList.toArray(new String[0]).toString());
+        String[] aaa = ingredientsList.toArray(new String[0]);
+        for (int i = 0; i < aaa.length; i++) {
+            Log.d("ALMA", " " + aaa[i]);
+        }
+        // Return the instructions as an array of strings
+        return aaa;   //Return the ingredients as an array of strings
+    }
+
+
+    public static String[] getInstructionsFromLines(String text) {
+        ArrayList<String> instructionsList = new ArrayList<>();
+
+        // Check if the text is empty or null
+        if (text == null || text.trim().isEmpty()) {
+            return new String[0]; // Return an empty array if no instructions found
+        }
+
+        // Find the section that contains instructions after "**Instructions"
+        int instructionsStart = text.indexOf("**Instructions");
+
+        // If the instructions section is found
+        if (instructionsStart != -1) {
+            String instructionsSection = text.substring(instructionsStart + 14).trim(); // Extract the instructions part
+
+            // Split the instructions section by lines
+            String[] lines = instructionsSection.split("\n");
+
+            // Add each line as an instruction, skipping empty lines
+            for (String line : lines) {
+                String trimmedLine = line.trim();
+                if (!trimmedLine.isEmpty()) {
+                    instructionsList.add(trimmedLine);
+                }
+            }
+        }
+        Log.d("ALMA","getInstructionsFromLines"+instructionsList.toArray(new String[0]).toString());
+        String[] aaa = instructionsList.toArray(new String[0]);
+        for (int i = 0; i < aaa.length; i++) {
+            Log.d("ALMA", " " + aaa[i]);
+        }
+        // Return the instructions as an array of strings
+        return aaa;   // instructionsList.toArray(new String[0]);
+    }
+
 }
