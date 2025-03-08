@@ -19,7 +19,7 @@
         <com.google.android.material.imageview.ShapeableImageView
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:id="@+id/recImage"
+            android:id="@+id/recipeImage"
             android:layout_marginStart="20dp"
             android:padding="8dp"
             android:scaleType="centerCrop"
@@ -29,25 +29,15 @@
         <TextView
             android:layout_width="120dp"
             android:layout_height="30dp"
-            android:id="@+id/recTitle"
+            android:id="@+id/recipeTitle"
             android:text="Title"
             android:textColor="#9C27B0"
             android:textSize="20sp"
-            android:layout_toEndOf="@id/recImage"
+            android:layout_toEndOf="@id/recipeImage"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
 
-        <TextView
-            android:id="@+id/recDdD"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_toEndOf="@id/recTitle"
-            android:text="Deadline"
-            android:textAlignment="center"
-            android:textColor="#9C27B0"
-            android:textSize="20sp" />
+
     </RelativeLayout>
 
 

@@ -1,5 +1,8 @@
 package com.example.whatsinthefridge;
 
+import static java.security.AccessController.getContext;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,11 +15,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.security.AccessControlContext;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RecipeListActivity extends AppCompatActivity {
-
+    RecipeAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +77,8 @@ public class RecipeListActivity extends AppCompatActivity {
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipes);
         // Set Adapter
-        RecipeAdapter adapter = new RecipeAdapter(recipes);
+
+        adapter = new RecipeAdapter(this,  0,0, recipes);
         recyclerView.setAdapter(adapter);
     }
 
