@@ -37,9 +37,9 @@ public class RecipeListActivity extends AppCompatActivity {
 
         // Create default data
         List<Recipe> recipes = new ArrayList<>();
-        recipes.add(new Recipe("Pasta", "Delicious pasta with tomato sauce", R.drawable.pasta));
-        recipes.add(new Recipe("Pizza", "Cheesy and tasty pizza", R.drawable.pizza));
-        recipes.add(new Recipe("Salad", "Healthy green salad", R.drawable.salad));
+       // recipes.add(new Recipe("Pasta", "Delicious pasta with tomato sauce", R.drawable.pasta));
+       // recipes.add(new Recipe("Pizza", "Cheesy and tasty pizza", R.drawable.pizza));
+       // recipes.add(new Recipe("Salad", "Healthy green salad", R.drawable.salad));
 
         // קבלת הנתונים מה-Intent
         Intent intent = getIntent();
@@ -55,12 +55,14 @@ public class RecipeListActivity extends AppCompatActivity {
                     if (parts.length == 2) {
                         String name = parts[0].trim();
                         String description = parts[1].trim();
-                        recipes.add(new Recipe(name, description, R.drawable.pasta));
+                        String[] ingredients = {"alma", "shira"};
+                        String[] instructions = {"alma1", "shira1"};
+                        recipes.add(new Recipe(name, description, R.drawable.pasta,ingredients,instructions));
                     }
                 }
             }
         }
-
+        //ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, recipes);
         // Set Adapter
         RecipeAdapter adapter = new RecipeAdapter(recipes);
         recyclerView.setAdapter(adapter);
