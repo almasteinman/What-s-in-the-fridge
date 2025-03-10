@@ -27,15 +27,15 @@
             app:shapeAppearanceOverlay="@style/roundImageView"/>
 
         <TextView
-            android:layout_width="120dp"
-            android:layout_height="30dp"
             android:id="@+id/recipeTitle"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="34dp"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@id/recipeImage"
             android:text="Title"
             android:textColor="#9C27B0"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/recipeImage"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="20dp"/>
+            android:textSize="20sp" />
 
 
     </RelativeLayout>

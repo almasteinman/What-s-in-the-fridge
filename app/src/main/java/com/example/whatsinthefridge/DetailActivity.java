@@ -2,9 +2,11 @@ package com.example.whatsinthefridge;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -15,9 +17,11 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 
+import java.util.Arrays;
+
 public class DetailActivity extends AppCompatActivity {
 
-    TextView detailDesc, recipeName;
+    TextView  recipeName, ingredientsText, instructionsText;
     ImageView detailImage;
     Button backButton ;
     String key = "";
@@ -34,19 +38,34 @@ public class DetailActivity extends AppCompatActivity {
             return insets;
         });
 
-        detailDesc = findViewById(R.id.detailDesc);
         detailImage = findViewById(R.id.detailImage);
         recipeName = findViewById(R.id.recipeName);
+        ingredientsText = findViewById(R.id.ingredientsText);
+        instructionsText = findViewById(R.id.instructionsText);
         backButton = findViewById(R.id.backButton);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
-            detailDesc.setText(bundle.getString("Description"));
             recipeName.setText(bundle.getString("Title"));
+
             //imageUrl = bundle.getString("Image");
             key = bundle.getString("Key");
             //Glide.with(this).load(bundle.getString("Image")).into(detailImage);
 
+            // קבלת רשימות המרכיבים וההוראות
+            String[] ingredients = bundle.getStringArray("Ingredients");
+            Log.d("ALMA", "📌 Ingredients received: " + Arrays.toString(ingredients));
+            String[] instructions = bundle.getStringArray("Instructions");
+            Log.d("ALMA", "📌 Instructions received: " + Arrays.toString(instructions));
+            
+            // הפיכת מערכים לטקסטים מופרדים בשורות
+            if (ingredients != null) {
+                ingredientsText.setText("Ingredients:\n" + String.join("\n", ingredients));
+            }
+
+            if (instructions != null) {
+                instructionsText.setText("Instructions:\n" + String.join("\n", instructions));
+            }
         }
 
         backButton.setOnClickListener(new View.OnClickListener() {

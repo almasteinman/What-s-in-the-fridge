@@ -55,11 +55,10 @@ public class RecipeListActivity extends AppCompatActivity {
             String[] rawrecipeLines = recipeData.split("\\*\\*\\d", 4); // פיצול לפי **1, **2, **3 (תוך הגבלת פיצול ל-3 חלקים בלבד)
             for (int i = 1; i < rawrecipeLines.length; i++) { // מתחילים מ-1 כי החלק הראשון הוא לפני **1
                 String[] ingredients = getIngridientsFromLines(rawrecipeLines[i]);
-                        // {"alma", "shira"};
                 String[] instructions = getInstructionsFromLines(rawrecipeLines[i]);
-                        //{"alma1", "shira1"};
                 String trimmedText = rawrecipeLines[i].trim(); // מסירים רווחים מיותרים
-                String name = getFirstWords(trimmedText, 10);
+                String name = getFirstWords(trimmedText);
+
 
                 recipes.add(new Recipe(name, R.drawable.pasta, ingredients, instructions));
             }
@@ -85,15 +84,26 @@ public class RecipeListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private static String getFirstWords(String text, int wordLimit) {
-        String[] words = text.split("\\s+"); // מחלקים לפי רווחים
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < Math.min(words.length, wordLimit); i++) {
-            result.append(words[i]).append(" ");
+    private static String getFirstWords(String text) {
+        if (text == null || text.isEmpty()) {
+            return ""; // במקרה של טקסט ריק או null
         }
-        Log.d("ALMA","getFirstWords"+result.toString().trim());
 
-        return result.toString().trim(); // מחזירים מחרוזת מסודרת
+        // מחפשים את המיקום של **Ingredients:** בטקסט
+        int index = text.toLowerCase().indexOf("**ingredients:**");
+
+        // אם המחרוזת קיימת, מחזירים את החלק שלפניה
+        String result;
+        if (index != -1) {
+            result = text.substring(0, index).trim();
+        } else {
+            result = text.trim(); // אם לא נמצא **Ingredients:** מחזירים את הטקסט כולו
+        }
+
+        // לוג עם הפלט שהפונקציה מחזירה
+        Log.d("ALMA", "getFirstWords: " + result);
+
+        return result;
     }
 
     public static String[] getIngridientsFromLines(String text) {
@@ -160,12 +170,12 @@ public class RecipeListActivity extends AppCompatActivity {
             }
         }
         Log.d("ALMA","getInstructionsFromLines"+instructionsList.toArray(new String[0]).toString());
-        String[] aaa = instructionsList.toArray(new String[0]);
-        for (int i = 0; i < aaa.length; i++) {
-            Log.d("ALMA", " " + aaa[i]);
+        String[] aaa1 = instructionsList.toArray(new String[0]);
+        for (int i = 0; i < aaa1.length; i++) {
+            Log.d("ALMA", " " + aaa1[i]);
         }
         // Return the instructions as an array of strings
-        return aaa;   // instructionsList.toArray(new String[0]);
+        return aaa1;   // instructionsList.toArray(new String[0]);
     }
 
 }
