@@ -45,14 +45,14 @@ public class IngredientsActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> speechRecognitionLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                Log.e("XXX", "✅ onActivityResult הופעל!");
+                Log.d("ALMA", "✅ onActivityResult הופעל!");
                 if (result.getResultCode() == RESULT_OK) {
                     Intent data = result.getData();
                     if (data != null) {
                         ArrayList<String> resultList = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                         if (resultList != null && !resultList.isEmpty()) {
                             String speechText = resultList.get(0);
-                            Log.d("XXX", "🎤 טקסט מזיהוי דיבור: " + speechText);
+                            Log.d("ALMA", "🎤 טקסט מזיהוי דיבור: " + speechText);
 
                             // הצגת הטקסט ב-EditText
                             ingredientInput.setText(speechText);
