@@ -100,7 +100,7 @@ public class IngredientsActivity extends AppCompatActivity {
     }
 
     private void startSpeechToText() {
-        Log.d("SpeechToText", "התחלתי את זיהוי הדיבור");
+        Log.d("ALMA", "התחלתי את זיהוי הדיבור");
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH);
@@ -109,7 +109,7 @@ public class IngredientsActivity extends AppCompatActivity {
     }
 
     private void sendToGemini(String text) {
-        Log.d("GeminiAI", "שולח את הטקסט ל-Gemini: " + text);
+        Log.d("ALMA", "שולח את הטקסט ל-Gemini: " + text);
 
         // בניית ה-Prompt עם הטקסט שנקלט מהדיבור
         Content prompt = new Content.Builder()

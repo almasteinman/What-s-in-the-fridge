@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.app.AlertDialog;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.button.MaterialButton;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +45,26 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        //GET USER from login
+        Intent intent = getIntent();
+        String username = intent.getStringExtra("USERNAME");
+        Log.d ("ALMA", "username = "+ username);
+        //IF admin user - which is my user - alma
+        //show one more button for display all user defined in app
+        if (username.equals("Alma Steinman"))
+        {
+            MaterialButton listUser = findViewById(R.id.listUser);
+            listUser.setVisibility(View.VISIBLE);
+            listUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Create an Intent to start the show all user activity
+                    Intent intent = new Intent(MainActivity.this, ShowUsersActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
 
         //AIRPLANE MODE
         createDialog();

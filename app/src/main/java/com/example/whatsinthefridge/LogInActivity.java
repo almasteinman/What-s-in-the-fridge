@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,11 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
 
@@ -56,6 +61,7 @@ public class LogInActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         auth = FirebaseAuth.getInstance();
+
                                         FirebaseDatabase database = FirebaseDatabase.getInstance();
                                         String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
 
@@ -67,8 +73,44 @@ public class LogInActivity extends AppCompatActivity {
                                                 auth.getCurrentUser().getPhotoUrl() != null ? auth.getCurrentUser().getPhotoUrl().toString() : ""
                                         );
 
+                                        Log.d("ALMA", "LoGIN --- "+ user.toString());
                                         // Save user info to Firebase Realtime Database
-                                        database.getReference("Users").child(userId).setValue(user);
+                                        //database.getReference("Users").child(userId).setValue(user);
+//                                        database.getReference("Users").push().setValue(user)
+//                                                .addOnSuccessListener(aVoid ->
+//                                                        Toast.makeText(LogInActivity.this, "Data added successfully!", Toast.LENGTH_SHORT).show()
+//                                                )
+//                                                .addOnFailureListener(error ->
+//                                                        Toast.makeText(LogInActivity.this, "Failed to add data: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+//                                                );
+
+                                        DatabaseReference usersRef = database.getReference("Users");
+
+                                        usersRef.orderByChild("userId").equalTo(userId)
+                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.exists()) {
+                                                            // User already exists, log and do nothing
+                                                            Log.d("Firebase", "User already exists: " + userId);
+                                                        } else {
+                                                            // Create new user entry
+                                                            database.getReference("Users").push().setValue(user)
+                                                                    .addOnSuccessListener(aVoid ->
+                                                                            Toast.makeText(LogInActivity.this, "Data added successfully!", Toast.LENGTH_SHORT).show()
+                                                                    )
+                                                                    .addOnFailureListener(error ->
+                                                                            Toast.makeText(LogInActivity.this, "Failed to add data: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+                                                                    );
+                                                        }
+                                                    }
+
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        Log.e("Firebase", "Database error: " + error.getMessage());
+                                                    }
+                                                });
+
+
 
                                         // Load profile data
                                         Glide.with(LogInActivity.this)
